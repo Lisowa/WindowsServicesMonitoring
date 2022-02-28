@@ -5,20 +5,20 @@ namespace WindowsServicesMonitoring
 {
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel _viewModel;
+        private MainWindowViewModel viewModel;
 
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = (MainWindowViewModel)DataContext;
+            viewModel = (MainWindowViewModel)DataContext;
 
             var getServicesThread = new Thread(() =>
             {
-               while (true)
-               {
-                   _viewModel.Refresh();
-                   Thread.Sleep(1000);
-               }
+                while (true)
+                {
+                    viewModel.Refresh();
+                    Thread.Sleep(1000);
+                }
             });
 
             getServicesThread.IsBackground = true;
@@ -27,12 +27,29 @@ namespace WindowsServicesMonitoring
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                viewModel.Start();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Can't start the service!\n" + ex.Message);
+            }
 
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                viewModel.Stop();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Can't stop the service!\n" + ex.Message);
+            }
         }
+
+      
     }
 }

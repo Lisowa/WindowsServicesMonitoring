@@ -14,19 +14,19 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.05*" MinHeight="40"/>
         </Grid.RowDefinitions>
-        <ListView  Margin="10,10,10,5" VerticalAlignment="Top" ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}" Grid.ColumnSpan="2" >
+        <ListView Margin="10,10,10,5" VerticalAlignment="Top" ItemsSource="{Binding Services}" SelectionMode="Single" SelectedItem="{Binding SelectedService}" >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ServiceName}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
                     <GridViewColumn Header="DisplayName" DisplayMemberBinding="{Binding DisplayName}"/>
                     <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}"/>
-                    <GridViewColumn Header="Account" DisplayMemberBinding="{Binding MachineName}"/>
+                    <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Account}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="1" x:Name="StartButton" Content="Запустить" HorizontalAlignment="Left" Height="20" Margin="10,5,0,10" VerticalAlignment="Bottom" Width="113"
+        <Button Grid.Row="1" x:Name="StartButton" Content="Запустить" HorizontalAlignment="Left" Height="20" Margin="10,5,0,10" VerticalAlignment="Bottom" Width="113" IsEnabled="{Binding CanStart}"
                 Click="StartButton_Click"/>
-        <Button Grid.Row="1" x:Name="StopButton" Content="Остановить" HorizontalAlignment="Left" Height="20" Margin="157,5,0,10" VerticalAlignment="Bottom" Width="113"
+        <Button Grid.Row="1" x:Name="StopButton" Content="Остановить" HorizontalAlignment="Left" Height="20" Margin="157,5,0,10" VerticalAlignment="Bottom" Width="113" IsEnabled="{Binding CanStop}"
                 Click="StopButton_Click"/>
     </Grid>
 </Window>

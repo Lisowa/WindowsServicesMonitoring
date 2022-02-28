@@ -1,22 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.ServiceProcess;
+//using System.ServiceProcess;
 using System.Windows.Data;
 
 namespace WindowsServicesMonitoring
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private readonly object _lock = new object();
-        private ServicesManager _manager = new ServicesManager();
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<ServiceController> Services { get; private set; }
+        private Service selectedService;
+        private readonly object _lock = new object();
+
+        public ObservableCollection<Service> Services { get; private set; }
         public string Title { get; }
+        public Service SelectedService
+        {
+            get { return selectedService; }
+            set
+            {
+                selectedService = value;
+                OnPropertyChanged(nameof(CanStart));
+                OnPropertyChanged(nameof(CanStop));
+            }
+        }
+
+        public bool CanStart
+        {
+            get
+            {
+                if (SelectedService != null && SelectedService.CanStart)
+                    return true;
+                return false;
+            }
+        }
+        public bool CanStop
+        {
+            get
+            {
+                if (SelectedService != null && SelectedService.CanStop)
+                    return true;
+                return false;
+            }
+        }
 
         public MainWindowViewModel()
         {
-            Services = new ObservableCollection<ServiceController>();
+            Services = new ObservableCollection<Service>();
             Title = "Windows Services Monitoring";
 
             BindingOperations.EnableCollectionSynchronization(Services, _lock);
@@ -24,11 +57,11 @@ namespace WindowsServicesMonitoring
 
         public void Refresh()
         {
-            var updatedServices = new List<ServiceController>(_manager.GetServices());
+            List<Service> updatedServices = MyServiceController.GetServices();
 
             for (int i = 0; i < Services.Count; i++)
             {
-                var updatedService = updatedServices.FirstOrDefault(x => Services[i].ServiceName == x.ServiceName);
+                var updatedService = updatedServices.FirstOrDefault(x => Services[i].Name == x.Name);
                 if (updatedService != null)
                 {
                     if (updatedService.Status != Services[i].Status)
@@ -49,5 +82,21 @@ namespace WindowsServicesMonitoring
                 Services.Add(item);
             }
         }
+
+        internal void Stop()
+        {
+            SelectedService.Stop();
+        }
+
+        internal void Start()
+        {
+            SelectedService.Start();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 }
