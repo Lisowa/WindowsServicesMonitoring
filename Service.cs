@@ -1,5 +1,4 @@
-﻿using System;
-using System.Management;
+﻿using System.Management;
 using System.ServiceProcess;
 
 
@@ -15,19 +14,14 @@ namespace WindowsServicesMonitoring
 
         public bool CanStart
         {
-            get
-            {
-                return Status != ServiceControllerStatus.Running.ToString();
-            }
+            get { return Status != ServiceControllerStatus.Running.ToString(); }
         }
         public bool CanStop
         {
             get
             {
                 using (var srv = new ServiceController(Name))
-                {
                     return srv.CanStop;
-                }
             }
         }
 
@@ -38,18 +32,19 @@ namespace WindowsServicesMonitoring
             Status = item.Status.ToString();
             Account = SetAccount(Name);
         }
+
         public void Start()
         {
-            var ex = new ServiceController(Name);
-            ex.Start();
+            using (var srv = new ServiceController(Name))
+                srv.Start();
         }
         public void Stop()
         {
-            new ServiceController(Name).Stop();
+            using (var srv = new ServiceController(Name))
+                srv.Stop();
         }
 
-
-        private string SetAccount(string serviceName)
+        private static string SetAccount(string serviceName)
         {
             string objPath = $"Win32_Service.Name='{serviceName}'";
             using (ManagementObject service = new ManagementObject(new ManagementPath(objPath)))

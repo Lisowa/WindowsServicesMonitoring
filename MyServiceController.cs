@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.ServiceProcess;
 
 
 namespace WindowsServicesMonitoring
 {
-     static class MyServiceController
+    public static class ServiceManager
     {
         public static List<Service> GetServices()
         {
-            ServiceController[] S = ServiceController.GetServices();
-            List<Service> Services = new List<Service>();
+            ServiceController[] serviceControllers = ServiceController.GetServices();
+            List<Service> services = serviceControllers.Select(x => new Service(x)).ToList();
 
-            foreach(var item in S)
-            {
-                Services.Add(new Service(item));
-            }
+            foreach (var item in serviceControllers)
+                item.Dispose();
 
-            return Services;
+            return services;
         }
     }
 }

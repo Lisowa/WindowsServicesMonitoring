@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-//using System.ServiceProcess;
 using System.Windows.Data;
 
 namespace WindowsServicesMonitoring
@@ -33,9 +31,7 @@ namespace WindowsServicesMonitoring
             {
                 if (IsBusy) return false;
 
-                if (SelectedService != null && SelectedService.CanStart)
-                    return true;
-                return false;
+                return SelectedService != null && SelectedService.CanStart;
             }
         }
         public bool CanStop
@@ -44,9 +40,7 @@ namespace WindowsServicesMonitoring
             {
                 if (IsBusy) return false;
 
-                if (SelectedService != null && SelectedService.CanStop)
-                    return true;
-                return false;
+                return SelectedService != null && SelectedService.CanStop;
             }
         }
 
@@ -61,7 +55,7 @@ namespace WindowsServicesMonitoring
 
         public void Refresh()
         {
-            List<Service> updatedServices = MyServiceController.GetServices();
+            List<Service> updatedServices = ServiceManager.GetServices();
 
             for (int i = 0; i < Services.Count; i++)
             {

@@ -6,7 +6,8 @@ namespace WindowsServicesMonitoring
 {
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel viewModel;
+        private readonly MainWindowViewModel viewModel;
+        private const int refreshDalay = 1000;
 
         public MainWindow()
         {
@@ -18,7 +19,7 @@ namespace WindowsServicesMonitoring
                 while (true)
                 {
                     viewModel.Refresh();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(refreshDalay);
                 }
             });
 
@@ -71,7 +72,5 @@ namespace WindowsServicesMonitoring
             stopServiceThread.IsBackground = true;
             stopServiceThread.Start();
         }
-
-
     }
 }
