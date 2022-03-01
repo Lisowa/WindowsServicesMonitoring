@@ -32,6 +32,8 @@ namespace WindowsServicesMonitoring
         {
             get
             {
+                if (IsBusy) return false;
+
                 if (SelectedService != null && SelectedService.CanStart)
                     return true;
                 return false;
@@ -46,6 +48,8 @@ namespace WindowsServicesMonitoring
                 return false;
             }
         }
+
+        public bool IsBusy { get; set; }
 
         public MainWindowViewModel()
         {
@@ -90,6 +94,7 @@ namespace WindowsServicesMonitoring
 
         internal void Start()
         {
+            OnPropertyChanged(nameof(CanStart));
             SelectedService.Start();
         }
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsServicesMonitoring"
         mc:Ignorable="d"
-        Title="{Binding Title}" MinHeight="140" Height="800" MinWidth="650" Width="700" WindowStartupLocation="CenterScreen">
+        Title="{Binding Title}" MinHeight="140" Height="800" MinWidth="770" Width="770" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>

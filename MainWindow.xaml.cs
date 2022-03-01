@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Windows;
 
 namespace WindowsServicesMonitoring
@@ -27,15 +28,26 @@ namespace WindowsServicesMonitoring
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                viewModel.Start();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Can't start the service!\n" + ex.Message);
-            }
 
+            var startServiceThread = new Thread(() =>
+            {
+                try
+                {
+                    viewModel.IsBusy = true;
+                    viewModel.Start();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Can't start the service!\n" + ex.Message);
+                }
+                finally
+                {
+                    viewModel.IsBusy = false;
+                }
+            });
+
+            startServiceThread.IsBackground = true;
+            startServiceThread.Start();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -50,6 +62,6 @@ namespace WindowsServicesMonitoring
             }
         }
 
-      
+
     }
 }
