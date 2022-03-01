@@ -52,14 +52,24 @@ namespace WindowsServicesMonitoring
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            var stopServiceThread = new Thread(() =>
             {
-                viewModel.Stop();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Can't stop the service!\n" + ex.Message);
-            }
+                try
+                {
+                    viewModel.IsBusy = true;
+                    viewModel.Stop();
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show("Can't stop the service!\n" + ex.Message);
+                }
+                finally
+                {
+                    viewModel.IsBusy = false;
+                }
+            });
+            stopServiceThread.IsBackground = true;
+            stopServiceThread.Start();
         }
 
 

@@ -11,27 +11,25 @@ namespace WindowsServicesMonitoring
         public string DisplayName { get; }
         public string Status { get; }
         public string Account { get; }
-        private ServiceController serviceController;
+
 
         public bool CanStart
         {
             get
             {
-                if (serviceController.Status != ServiceControllerStatus.Running)
-                    return true;
-                return false;
+                return Status != ServiceControllerStatus.Running.ToString();
             }
         }
         public bool CanStop
         {
             get
             {
-                if (serviceController.CanStop)
-                    return true;
-                return false;
+                using (var srv = new ServiceController(Name))
+                {
+                    return srv.CanStop;
+                }
             }
         }
-
 
         public Service(ServiceController item)
         {
@@ -39,16 +37,15 @@ namespace WindowsServicesMonitoring
             DisplayName = item.DisplayName;
             Status = item.Status.ToString();
             Account = SetAccount(Name);
-            serviceController = item;
         }
         public void Start()
         {
-            serviceController.Start();
-            serviceController.WaitForStatus(ServiceControllerStatus.Running);
+            var ex = new ServiceController(Name);
+            ex.Start();
         }
         public void Stop()
         {
-            serviceController.Stop();
+            new ServiceController(Name).Stop();
         }
 
 

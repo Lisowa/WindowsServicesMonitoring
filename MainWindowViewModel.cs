@@ -16,7 +16,6 @@ namespace WindowsServicesMonitoring
         private readonly object _lock = new object();
 
         public ObservableCollection<Service> Services { get; private set; }
-        public string Title { get; }
         public Service SelectedService
         {
             get { return selectedService; }
@@ -43,6 +42,8 @@ namespace WindowsServicesMonitoring
         {
             get
             {
+                if (IsBusy) return false;
+
                 if (SelectedService != null && SelectedService.CanStop)
                     return true;
                 return false;
@@ -54,7 +55,6 @@ namespace WindowsServicesMonitoring
         public MainWindowViewModel()
         {
             Services = new ObservableCollection<Service>();
-            Title = "Windows Services Monitoring";
 
             BindingOperations.EnableCollectionSynchronization(Services, _lock);
         }
@@ -89,6 +89,7 @@ namespace WindowsServicesMonitoring
 
         internal void Stop()
         {
+            OnPropertyChanged(nameof(CanStop));
             SelectedService.Stop();
         }
 
